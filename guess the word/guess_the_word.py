@@ -1,15 +1,16 @@
 import random
 WORDS = [
-    "apple", "banana","water", "house", "table", "chair", "window",
-    "school", "teacher", "student", "pencil", "paper",
-    "computer", "keyboard", "mouse", "screen", "phone",
-    "music", "guitar", "piano", "drum", "song",
-    "river", "ocean", "beach", "mountain", "forest",
-    "animal", "tiger", "lion", "zebra", "monkey",
-    "rabbit", "horse", "sheep", "goat", "camel",
-    "bird", "eagle", "snake", "fish", "shark",
-    "pizza", "bread", "cheese", "salad", "soup",
-    "coffee", "sugar", "honey", "butter", "cookie"]    
+    "apple", "banana",
+    # "school", "teacher", "student", "pencil", "paper",
+    # "computer", "keyboard", "mouse", "screen", "phone",
+    # "music", "guitar", "piano", "drum", "song",
+    # "river", "ocean", "beach", "mountain", "forest",
+    # "animal", "tiger", "lion", "zebra", "monkey",
+    # "rabbit", "horse", "sheep", "goat", "camel",
+    # "bird", "eagle", "snake", "fish", "shark",
+    # "pizza", "bread", "cheese", "salad", "soup"
+    ]    
+# משתנה קבוע של מספר הניסיות שיש לשחקן
 MAX_TRIES = 6
 # הפונקציה מחזירה הודעת פתיחה למשחק
 def enter_of_game():
@@ -40,7 +41,7 @@ def get_guess_from_the_user():
     guess_of_the_user=input("please enter your guess: ")
     return guess_of_the_user.lower()
 
-
+# פונקציה המחליפה ע"י שימוש בלולאה כל _ באות שהמשתמש גילה
 def checking_the_correctness_of_the_guess(the_choose_word,hidden_word,the_choosen_char):
     if the_choosen_char not in the_choose_word:
         return False
@@ -49,49 +50,52 @@ def checking_the_correctness_of_the_guess(the_choose_word,hidden_word,the_choose
             if the_choose_word[i] == the_choosen_char:
                 hidden_word[i]=the_choosen_char
         return True
+# פונקציה המחזירה True אם השחקן ניצח
+def winnig_the_game():
+    list_word=[l for l in the_choose_word]
+    if list_word == hidden_word:
+       return True
 
-
-
-
+# פונקציה האחראית על תפעול המשחק , על הבדיקות של תקינות הקלט וזרימת המשחק
 def checking_the_correctness_of_the_character():
     counter=0
-    attempts=6
     list_of_chars=[]
-    while counter< MAX_TRIES:
-        list_word=[l for l in the_choose_word]
-        if list_word == hidden_word:
-            return f"the word is {the_choose_word} \nHow wonderful you won"
-        print(f"You have {attempts} attempts left")
-        
-        
-        guess_of_the_player= get_guess_from_the_user()
-        
+    while counter< MAX_TRIES and not winnig_the_game():
+        print(f"You have {MAX_TRIES-counter} attempts left")
+        guess_of_the_player= get_guess_from_the_user() 
         if guess_of_the_player not in list_of_chars:
            list_of_chars.append(guess_of_the_player)
-           print(list_of_chars)
+           print("Previous attempts: ",*list_of_chars)
         else:
             counter-=1
-            attempts+=1
-        if len(guess_of_the_player)==1 and guess_of_the_player.isalpha():
-
+            
+        if len(guess_of_the_player) ==1 and guess_of_the_player.isalpha():
             if not checking_the_correctness_of_the_guess(the_choose_word,hidden_word,guess_of_the_player):
-                print(hidden_word)
+                print_hidden_word()
                 counter+=1
-                attempts-=1
+
+
             else:
-                 print(hidden_word)
+                 print_hidden_word()
                  continue
         else:
-            print(hidden_word)
-    if counter == MAX_TRIES:
+            print("ivalid input")
+            print_hidden_word()
+    if winnig_the_game():
+        return f"the word is {the_choose_word} \nHow wonderful you won"
+    else:
         return f"the word was {the_choose_word} \nGAME OVER"
     
+def print_hidden_word():
+    print(*hidden_word)
+
+# פונקציה שאחראית על הפלטים שהמשתמש רואה 
 def printer():
     print(enter_of_game())
-    print(hidden_word)
+    print_hidden_word()
     print(checking_the_correctness_of_the_character())
 
-
+# פונקציה ראשית של הפעלת המשחק
 def main():
     printer()
 
